@@ -36,7 +36,7 @@ export const Sidebar: React.FC = () => {
               MuscleMap
             </h1>
             <span className="text-[10px] font-bold text-[#B4F34C] tracking-wider uppercase">
-              v1.0.0 Web
+              v1.0.1 Web
             </span>
           </div>
         </div>

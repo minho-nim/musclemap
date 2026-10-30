@@ -88,10 +88,9 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
 
       {/* SVG Canvas Container */}
       {dualView ? (
-        /* Dual View (Planfit image_2b358369.png style) */
-        <div className="w-full max-w-lg bg-[#24252A] rounded-2xl border border-[#303137] p-3 sm:p-5 flex items-center justify-center gap-2 sm:gap-6">
-          <div className="flex-1 flex flex-col items-center">
-            <span className="text-[10px] font-bold text-[#A9AAB3] mb-1">전면 (Front)</span>
+        <div className="w-full max-w-lg flex items-center justify-center gap-2">
+          <div className="flex-1 min-w-0 flex flex-col items-center rounded-2xl bg-[#24252A] border border-[#3E4048] pt-3 pb-2">
+            <span className="text-[11px] font-semibold text-[#A9AAB3] mb-2">앞면</span>
             <div className="w-full max-w-[190px]">
               <AnatomicalSvgFront
                 selectedMuscle={selectedMuscle}
@@ -104,10 +103,8 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
             </div>
           </div>
 
-          <div className="w-px h-64 bg-[#3E4048]/50 hidden sm:block" />
-
-          <div className="flex-1 flex flex-col items-center">
-            <span className="text-[10px] font-bold text-[#A9AAB3] mb-1">후면 (Back)</span>
+          <div className="flex-1 min-w-0 flex flex-col items-center rounded-2xl bg-[#24252A] border border-[#3E4048] pt-3 pb-2">
+            <span className="text-[11px] font-semibold text-[#A9AAB3] mb-2">뒷면</span>
             <div className="w-full max-w-[190px]">
               <AnatomicalSvgBack
                 selectedMuscle={selectedMuscle}
@@ -172,6 +169,14 @@ export const MuscleMap: React.FC<MuscleMapProps> = ({
               <span className="text-[10px] text-[#A9B2AC]">{selectedDef.nameEn}</span>
             </div>
           )}
+        </div>
+      )}
+
+      {mode === 'guide' && (
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-3 text-[10px] text-[#A9AAB3]" aria-label="근육 색상 안내">
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-[#FF806B]" />주요 근육</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-[#E9AB87]" />보조 근육</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-[#727781]" />다른 부위</span>
         </div>
       )}
 
