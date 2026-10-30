@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #1B1C20;
+  --color-surface: #303137;
+  --color-surface-hover: #3A3B43;
+  --color-input: #42434A;
+  --color-border-dark: #3E4048;
+  
+  /* Primary Accent: Lime */
+  --color-accent: #B4F34C;
+  --color-accent-hover: #A0DE3C;
+  --color-accent-text: #101510;
+
+  /* Typography */
+  --color-text-primary: #F4F4F5;
+  --color-text-secondary: #A9AAB3;
+
+  /* Target Muscle Anatomy Colors */
+  --color-muscle-primary: #FF806B;
+  --color-muscle-secondary: #E9AB87;
+  --color-muscle-inactive: #4E525C;
+  --color-muscle-base: #282A30;
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+button:not(:disabled) { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #B4F34C;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #1B1C20;
+  color: #F4F4F5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1B1C20;
+}
+::-webkit-scrollbar-thumb {
+  background: #3E4048;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5A5D68;
+}
+
+/* Touch action optimization for rapid workout logging */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Animation utilities */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

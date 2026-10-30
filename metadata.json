@@ -1,0 +1,6 @@
+{
+  "name": "MuscleMap",
+  "description": "운동 종목과 세트 기록 관리, Pace Mode 타이머 및 운동 점수 시스템, 8종 운동 방식, 2D 근육 지도 시각화 웹앱",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
