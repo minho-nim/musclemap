@@ -9,9 +9,10 @@ import { Search, X, Plus, Dumbbell, Sparkles } from 'lucide-react';
 interface ExercisePickerModalProps {
   exercises: Exercise[];
   onClose: () => void;
+  onSelectExercise?: (exerciseId: string) => void;
 }
 
-export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exercises, onClose }) => {
+export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exercises, onClose, onSelectExercise }) => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ExerciseCategory | 'all'>('all');
 
@@ -47,7 +48,8 @@ export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exerci
   }, [exercises, selectedCategory, search]);
 
   const handleSelect = async (exercise: Exercise) => {
-    await addExerciseToSession(exercise.id);
+    if (onSelectExercise) onSelectExercise(exercise.id);
+    else await addExerciseToSession(exercise.id);
     onClose();
   };
 
@@ -106,6 +108,10 @@ export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exerci
               <div
                 key={ex.id}
                 onClick={() => handleSelect(ex)}
+                role="button"
+                tabIndex={0}
+                aria-label={`${ex.nameKo} 추가`}
+                onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); void handleSelect(ex); } }}
                 className="p-2.5 bg-[#26282E] hover:bg-[#303137] border border-[#3E4048] hover:border-[#B4F34C]/40 rounded-2xl cursor-pointer transition-all flex items-center justify-between group"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -132,7 +138,7 @@ export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exerci
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <button
+                  {!onSelectExercise && <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -143,7 +149,7 @@ export const ExercisePickerModal: React.FC<ExercisePickerModalProps> = ({ exerci
                     title="상세 설명 보기"
                   >
                     상세
-                  </button>
+                  </button>}
 
                   <button
                     type="button"

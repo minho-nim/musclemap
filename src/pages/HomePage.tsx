@@ -135,11 +135,11 @@ export const HomePage: React.FC<{ exercises: Exercise[] }> = ({
         </div>
         <button
           type="button"
-          onClick={() => openRoutineEditor()}
+          onClick={() => setActiveTab('routines')}
           className="min-h-11 px-3 flex items-center gap-1.5 text-sm font-semibold text-[#B4F34C]"
         >
           <Plus size={18} />
-          루틴 만들기
+          루틴 관리
         </button>
       </div>
       <section aria-label="주간 운동 일정" className="mb-6">
@@ -317,10 +317,10 @@ export const HomePage: React.FC<{ exercises: Exercise[] }> = ({
                   </p>
                   <button
                     type="button"
-                    onClick={() => openRoutineEditor()}
+                    onClick={() => setActiveTab('routines')}
                     className="min-h-11 mt-2 text-xs text-[#B4F34C]"
                   >
-                    새 루틴 만들기 →
+                    루틴 등록하러 가기 →
                   </button>
                 </div>
               )}

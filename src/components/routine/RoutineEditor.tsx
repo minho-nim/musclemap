@@ -51,23 +51,29 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
   const [routineExercises, setRoutineExercises] = useState<RoutineExercise[]>([]);
 
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [existingRoutine, setExistingRoutine] = useState<Routine | null>(null);
+  const [isLoading, setIsLoading] = useState(!!routineId);
 
   useEffect(() => {
     async function load() {
       if (routineId) {
         const existing = await db.routines.get(routineId);
         if (existing) {
+          setExistingRoutine(existing);
           setName(existing.name);
           setSplitType(existing.splitType);
           setScheduledDays(existing.scheduledDays);
           setIsRotating(existing.isRotating);
           setRoutineExercises(existing.exercises);
-        }
+        } else { setSaveError('루틴을 찾을 수 없습니다. 목록으로 돌아가 다시 선택해주세요.'); }
       } else {
         setName('새로운 루틴');
       }
+      setIsLoading(false);
     }
-    load();
+    load().catch(() => { setSaveError('루틴을 불러오지 못했습니다. 다시 열어주세요.'); setIsLoading(false); });
   }, [routineId]);
 
   const toggleDay = (day: DayOfWeek) => {
@@ -119,6 +125,7 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
   };
 
   const handleSave = async () => {
+    if (isSaving || isLoading || (routineId && !existingRoutine)) return;
     if (!name.trim()) {
       alert('루틴 이름을 입력해주세요.');
       return;
@@ -128,8 +135,11 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
       return;
     }
 
+    setIsSaving(true);
+    setSaveError('');
+    try {
     const now = new Date().toISOString();
-    const id = routineId || `routine_${Date.now()}`;
+    const id = routineId || `routine_${crypto.randomUUID()}`;
 
     const routineData: Routine = {
       id,
@@ -138,24 +148,27 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
       scheduledDays,
       isRotating,
       exercises: routineExercises,
-      createdAt: now,
+      createdAt: existingRoutine?.createdAt ?? now,
       updatedAt: now,
-      orderIndex: 0,
+      orderIndex: existingRoutine?.orderIndex ?? await db.routines.count(),
     };
 
     await db.routines.put(routineData);
 
     onSaved();
     onClose();
+    } catch { setSaveError('루틴을 저장하지 못했습니다. 다시 시도해주세요.'); }
+    finally { setIsSaving(false); }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-[#1B1C20] border border-[#3E4048] rounded-3xl p-6 shadow-2xl flex flex-col max-h-[90vh]">
+    <div className="mx-auto w-full max-w-3xl px-4 py-6 pb-28 md:px-8 md:py-10">
+      <div className="relative w-full bg-[#1B1C20] border border-[#3E4048] rounded-3xl p-5 sm:p-6 flex flex-col">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
+          aria-label="루틴 목록으로 돌아가기"
           className="absolute top-4 right-4 p-2 text-[#A9B2AC] hover:text-[#F5F6F5] hover:bg-[#292E29] rounded-xl transition-all"
         >
           <X className="w-5 h-5" />
@@ -164,9 +177,12 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
         <h3 className="text-xl font-extrabold text-[#F5F6F5] mb-4">
           {routineId ? '루틴 수정' : '새 루틴 만들기'}
         </h3>
+        <p className="text-xs text-[#A9B2AC] mb-6">이름과 요일을 정하고 종목별 목표를 등록하세요. 저장한 루틴은 나의 운동에서 확인할 수 있습니다.</p>
+        {saveError && <p role="alert" className="text-sm text-[#FF806B] mb-4">{saveError}</p>}
+        {isLoading && <p role="status" className="text-sm text-[#A9B2AC] mb-4">루틴을 불러오는 중…</p>}
 
         {/* Scrollable Form Body */}
-        <div className="flex-1 overflow-y-auto pr-1 space-y-4">
+        <fieldset disabled={isLoading || (!!routineId && !existingRoutine)} className="flex-1 min-w-0 space-y-5">
           {/* Routine Name */}
           <div>
             <label className="text-xs font-semibold text-[#A9B2AC] block mb-1">루틴 이름</label>
@@ -208,6 +224,7 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
                     key={d.id}
                     type="button"
                     onClick={() => toggleDay(d.id)}
+                    aria-pressed={isSelected}
                     className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
                       isSelected
                         ? 'bg-[#B4F34C] text-[#101510] shadow-sm'
@@ -356,17 +373,18 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </fieldset>
 
         {/* Action Button */}
         <div className="pt-4 border-t border-[#363D36] mt-2">
           <button
             type="button"
             onClick={handleSave}
+            disabled={isSaving || isLoading || (!!routineId && !existingRoutine)}
             className="w-full min-h-[50px] bg-[#B4F34C] hover:bg-[#A0DE3C] text-[#101510] font-extrabold rounded-2xl transition-all shadow-lg shadow-[#B4F34C]/20 flex items-center justify-center gap-2"
           >
             <Check className="w-5 h-5 stroke-[2.5]" />
-            <span>루틴 저장 완료</span>
+            <span>{isSaving ? '저장 중…' : '루틴 저장'}</span>
           </button>
         </div>
 
@@ -375,6 +393,7 @@ export const RoutineEditor: React.FC<RoutineEditorProps> = ({
           <ExercisePickerModal
             exercises={exercises}
             onClose={() => setIsPickerOpen(false)}
+            onSelectExercise={handleAddExerciseFromPicker}
           />
         )}
       </div>

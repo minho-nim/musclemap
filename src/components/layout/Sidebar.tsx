@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigationStore, NavigationTab } from '../../stores/useNavigationStore';
 import { useWorkoutStore } from '../../stores/useWorkoutStore';
-import { Home, Dumbbell, Activity, BarChart2, Settings, Zap } from 'lucide-react';
+import { Home, Dumbbell, Activity, BarChart2, Settings, Zap, ClipboardList } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const { activeTab, setActiveTab, closeExerciseDetail, openSettings } = useNavigationStore();
@@ -15,6 +15,7 @@ export const Sidebar: React.FC = () => {
   const navItems: { tab: NavigationTab; label: string; icon: React.ElementType }[] = [
     { tab: 'home', label: '나의 운동', icon: Home },
     { tab: 'workout', label: '운동 기록', icon: Dumbbell },
+    { tab: 'routines', label: '루틴 관리', icon: ClipboardList },
     { tab: 'muscle', label: '근육 지도', icon: Activity },
     { tab: 'analytics', label: '운동 분석', icon: BarChart2 },
   ];

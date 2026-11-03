@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { MuscleId } from '../types';
 
-export type NavigationTab = 'home' | 'workout' | 'muscle' | 'analytics';
+export type NavigationTab = 'home' | 'workout' | 'routines' | 'muscle' | 'analytics';
 
 interface NavigationState {
   activeTab: NavigationTab;
@@ -40,13 +40,13 @@ export const useNavigationStore = create<NavigationState>((set) => ({
   exercisePickerTarget: null,
   addToRoutineExerciseId: null,
 
-  setActiveTab: (tab) => set({ activeTab: tab }),
+  setActiveTab: (tab) => set({ activeTab: tab, isRoutineEditorOpen: false, editingRoutineId: null, activeExerciseDetailId: null }),
   setSelectedMuscle: (muscle) => set({ selectedMuscle: muscle }),
   openExerciseDetail: (exerciseId) => set({ activeExerciseDetailId: exerciseId }),
   closeExerciseDetail: () => set({ activeExerciseDetailId: null }),
   openSettings: () => set({ isSettingsOpen: true }),
   closeSettings: () => set({ isSettingsOpen: false }),
-  openRoutineEditor: (routineId) => set({ isRoutineEditorOpen: true, editingRoutineId: routineId || null }),
+  openRoutineEditor: (routineId) => set({ activeTab: 'routines', activeExerciseDetailId: null, isRoutineEditorOpen: true, editingRoutineId: routineId || null }),
   closeRoutineEditor: () => set({ isRoutineEditorOpen: false, editingRoutineId: null }),
   openExercisePicker: (target) => set({ isExercisePickerOpen: true, exercisePickerTarget: target }),
   closeExercisePicker: () => set({ isExercisePickerOpen: false, exercisePickerTarget: null }),

@@ -18,6 +18,7 @@ import { WorkoutSummaryModal } from './components/workout/WorkoutSummaryModal';
 import { ExerciseDetailPage } from './components/exercise/ExerciseDetailPage';
 import { HomePage } from './pages/HomePage';
 import { WorkoutPage } from './pages/WorkoutPage';
+import { RoutinesPage } from './pages/RoutinesPage';
 import { MusclePage } from './pages/MusclePage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 
@@ -107,6 +108,14 @@ export default function App() {
             <HomePage exercises={exercises} />
           ) : activeTab === 'workout' ? (
             <WorkoutPage exercises={exercises} />
+          ) : activeTab === 'routines' ? (
+            isRoutineEditorOpen ? <RoutineEditor
+              key={editingRoutineId ?? 'new'}
+              routineId={editingRoutineId}
+              exercises={exercises}
+              onClose={closeRoutineEditor}
+              onSaved={refreshData}
+            /> : <RoutinesPage exercises={exercises} />
           ) : activeTab === 'muscle' ? (
             <MusclePage exercises={exercises} />
           ) : (
@@ -136,16 +145,6 @@ export default function App() {
         <SettingsModal
           onClose={closeSettings}
           onDataChanged={refreshData}
-        />
-      )}
-
-      {/* Routine Creator / Editor Modal */}
-      {isRoutineEditorOpen && (
-        <RoutineEditor
-          routineId={editingRoutineId}
-          exercises={exercises}
-          onClose={closeRoutineEditor}
-          onSaved={refreshData}
         />
       )}
 
